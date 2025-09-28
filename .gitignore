@@ -1,0 +1,31 @@
+# Скомпилированные class-файлы
+*.class
+
+# Папка скомпилированных артефактов
+/out/
+/bin/
+/target/
+
+# Логи
+*.log
+
+# Пакеты
+*.jar
+*.war
+*.ear
+
+# Конфиги IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.project
+.classpath
+.settings/
+
+# Кэш
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
