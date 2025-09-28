@@ -2,6 +2,7 @@
 import java.util.Scanner;
 
 public class Main {
+
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -99,9 +100,9 @@ public class Main {
 
     // Задание 3: Геометрия
     private static void task3() {
-        System.out.println("=== ЗАДАНИЕ 3: Площадь сферы ===");
+        System.out.println("=== ЗАДАНИЕ 3: Площадь сферы, вписанной в конус ===");
 
-        double angle = readDouble("Угол (градусы): ");
+        double angle = readDouble("Угол между осью и образующей конуса (градусы): ");
         double lateralArea = readDouble("Площадь боковой поверхности конуса: ");
 
         if (angle <= 0 || angle >= 90) {
@@ -115,6 +116,7 @@ public class Main {
         double radius = Math.sqrt(lateralArea * Math.sin(angleRad) / (Math.PI * (1 + Math.cos(angleRad))));
         double sphereArea = 4 * Math.PI * Math.pow(radius, 2);
 
+        System.out.printf("Радиус вписанной сферы: %.4f\n", radius);
         System.out.printf("Площадь поверхности сферы: %.4f\n\n", sphereArea);
     }
 
@@ -182,6 +184,10 @@ public class Main {
     }
 
     public static void task1Helper(double x, double y, double z, double k) {
+        if (y + k <= 0) {
+            throw new RuntimeException("ln(y+k): y+k должно быть > 0");
+        }
+
         double numeratorR = Math.sqrt(Math.pow(Math.sin(y), 2) + 6.835);
         double denominatorR = Math.log(y + k) + 3 * Math.pow(y, 2);
         if (Math.abs(denominatorR) < 1e-10) {
@@ -229,6 +235,7 @@ public class Main {
         double radius = Math.sqrt(lateralArea * Math.sin(angleRad) / (Math.PI * (1 + Math.cos(angleRad))));
         double sphereArea = 4 * Math.PI * Math.pow(radius, 2);
 
+        System.out.printf("Радиус вписанной сферы: %.4f\n", radius);
         System.out.printf("Площадь поверхности сферы: %.4f\n\n", sphereArea);
     }
 
