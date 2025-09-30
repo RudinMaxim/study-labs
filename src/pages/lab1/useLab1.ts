@@ -21,6 +21,31 @@ export type Results = {
   };
 };
 
+export type Validation = {
+  diameter: {
+    nEntered: number;
+    nValid: number;
+    nonPositiveCount: number;
+    invalidCount: number;
+    tooFewForRandom: boolean;
+    tooMany: boolean;
+    outlierCount: number;
+  };
+  height: {
+    nEntered: number;
+    nValid: number;
+    nonPositiveCount: number;
+    invalidCount: number;
+    tooFewForRandom: boolean;
+    tooMany: boolean;
+    outlierCount: number;
+  };
+  mass: {
+    isMissing: boolean;
+    nonPositive: boolean;
+  };
+};
+
 const ALPHA = 0.95;
 const STUDENT_T: Record<number, number> = {
   // df: t_{0.975, df}
@@ -64,6 +89,7 @@ export function useLab1() {
     h: "lab1:heightMeasurements",
     m: "lab1:massGrams",
   } as const;
+  const MAX_N = 100;
 
   const safeParseArray = (raw: string | null, fallbackLen = 5): MeasurementArray => {
     try {
@@ -148,7 +174,10 @@ export function useLab1() {
     );
 
   const validNumbers = (arr: MeasurementArray): number[] =>
-    arr.filter((v): v is number => typeof v === "number" && Number.isFinite(v));
+    arr.filter(
+      (v): v is number =>
+        typeof v === "number" && Number.isFinite(v) && v > 0
+    );
 
   const computeScalar = (
     values: number[],
@@ -177,6 +206,39 @@ export function useLab1() {
     const delta = randomError + instrError || null;
     const epsilonPercent = avg && delta !== null ? (delta / avg) * 100 : null;
     return { avg, delta, epsilonPercent, n, sumSquaredDeviations: sumSq };
+  };
+
+  const analyzeArray = (arr: MeasurementArray): {
+    nEntered: number;
+    nValid: number;
+    nonPositiveCount: number;
+    invalidCount: number;
+    tooFewForRandom: boolean;
+    tooMany: boolean;
+    outlierCount: number;
+  } => {
+    const nEntered = arr.length;
+    const positives = arr.filter(
+      (v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0
+    );
+    const nValid = positives.length;
+    const nonPositiveCount = arr.filter(
+      (v) => typeof v === "number" && Number.isFinite(v) && v <= 0
+    ).length;
+    const invalidCount = arr.filter((v) => v == null || !Number.isFinite(v as number)).length;
+    const tooFewForRandom = nValid > 0 && nValid < 2;
+    const tooMany = nEntered > MAX_N;
+    let outlierCount = 0;
+    if (nValid >= 3) {
+      const avg = positives.reduce((a, x) => a + x, 0) / nValid;
+      const devs = positives.map((x) => x - avg);
+      const sumSq = devs.reduce((a, d) => a + d * d, 0);
+      const s = Math.sqrt(sumSq / (nValid - 1));
+      if (s > 0) {
+        outlierCount = devs.filter((d) => Math.abs(d) / s > 3).length;
+      }
+    }
+    return { nEntered, nValid, nonPositiveCount, invalidCount, tooFewForRandom, tooMany, outlierCount };
   };
 
   useEffect(() => {
@@ -253,6 +315,14 @@ export function useLab1() {
     massGrams,
     setMassGrams,
     results,
+    validation: {
+      diameter: analyzeArray(diameterMeasurements),
+      height: analyzeArray(heightMeasurements),
+      mass: {
+        isMissing: massGrams == null,
+        nonPositive: !!(typeof massGrams === "number" && massGrams <= 0),
+      },
+    } as Validation,
     constants: { ALPHA, STUDENT_T, MICROMETER, CALIPER },
   };
 }
