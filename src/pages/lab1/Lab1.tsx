@@ -73,6 +73,8 @@ function TableStats({
     });
   }, [values, avg]);
   const sumSq = rows.reduce((acc, r) => acc + r.dev2, 0);
+  const sumV = values.reduce((acc, v) => acc + v, 0);
+  const sumDev = rows.reduce((acc, r) => acc + r.dev, 0);
   return (
     <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
       <table className="w-full text-xs border-collapse">
@@ -94,9 +96,15 @@ function TableStats({
             </tr>
           ))}
           <tr className="bg-muted/50">
+            <td className="border px-1.5 py-1 font-medium">Среднее</td>
+            <td className="border px-1.5 py-1 font-medium">{avg?.toFixed(2) ?? ""}</td>
+            <td className="border px-1.5 py-1" />
+            <td className="border px-1.5 py-1" />
+          </tr>
+          <tr className="bg-muted/50">
             <td className="border px-1.5 py-1 font-medium">Σ</td>
-            <td className="border px-1.5 py-1" />
-            <td className="border px-1.5 py-1" />
+            <td className="border px-1.5 py-1 font-medium">{sumV.toFixed(2)}</td>
+            <td className="border px-1.5 py-1 font-medium">{sumDev.toFixed(2)}</td>
             <td className="border px-1.5 py-1 font-medium">{sumSq.toFixed(4)}</td>
           </tr>
         </tbody>
@@ -163,7 +171,7 @@ export default function Lab1() {
                 ⟨d⟩ = {results.diameter.avg?.toFixed(2) ?? "—"} мм
               </div>
               <div>
-                Δd = {results.diameter.delta?.toFixed(2) ?? "—"} мм, εd = {results.diameter.epsilonPercent?.toFixed(2) ?? "—"}% (α = {constants.ALPHA})
+                Δd = {results.diameter.delta?.toFixed(2) ?? "—"} мм, εd = {results.diameter.avg && results.diameter.delta ? (results.diameter.delta / results.diameter.avg).toFixed(4) : "—"} (α = {constants.ALPHA})
               </div>
             </div>
           </div>
@@ -203,7 +211,7 @@ export default function Lab1() {
                 ⟨h⟩ = {results.height.avg?.toFixed(2) ?? "—"} мм
               </div>
               <div>
-                Δh = {results.height.delta?.toFixed(2) ?? "—"} мм, εh = {results.height.epsilonPercent?.toFixed(2) ?? "—"}% (α = {constants.ALPHA})
+                Δh = {results.height.delta?.toFixed(2) ?? "—"} мм, εh = {results.height.avg && results.height.delta ? (results.height.delta / results.height.avg).toFixed(4) : "—"} (α = {constants.ALPHA})
               </div>
             </div>
           </div>
@@ -237,12 +245,8 @@ export default function Lab1() {
           <p className="text-muted-foreground text-xs animate-in fade-in-50">Введите все измерения для расчёта ρ</p>
         ) : (
           <div className="grid gap-1 text-xs animate-in fade-in-50 slide-in-from-bottom-1">
-            <div>π = {results.density.pi}</div>
             <div>
-              ρ = {results.density.rho.toFixed(2)} кг/м³
-            </div>
-            <div>
-              Δρ = {results.density.deltaRho?.toFixed(2)} кг/м³, ερ = {results.density.epsilonPercent?.toFixed(2)}%
+              Δρ = {results.density.deltaRho?.toFixed(2)} кг/м³
             </div>
             <div className="text-muted-foreground">при α = {constants.ALPHA}</div>
           </div>
