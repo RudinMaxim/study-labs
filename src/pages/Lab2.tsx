@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-export default function Calculator2() {
+export default function Lab2() {
   const [value, setValue] = useState<string>("");
   const [percent, setPercent] = useState<string>("10");
   const result = useMemo(() => {

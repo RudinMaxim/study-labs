@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 type TabConfig = {
   value: string;
