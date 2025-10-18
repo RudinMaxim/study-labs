@@ -6,7 +6,7 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        System.out.println("=== РЕШЕНИЕ МАТЕМАТИЧЕСКИХ ЗАДАЧ ===\n");
+        System.out.println("=== ЛАБОРАТОРНАЯ РАБОТА 1: ВАРИАНТ 21 ===\n");
 
         while (true) {
             System.out.println("1. Вычисление функций R и L");
